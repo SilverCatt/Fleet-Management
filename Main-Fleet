@@ -1,12 +1,11 @@
 import javax.swing.JOptionPane;
 
-/*
+/* 
  * Author: ImTheSilverOne
  * Date: 4/27/2022
  * Description: This program is used to manage a fleet of trucks and advise which boats need to be auctioned.
- * 				This program allows for data entry, searching entered data, displaying entered data, and exiting the program.
- * 				All data entered is validated.
- * 				
+ * 		This program allows for data entry, searching entered data, displaying entered data, and exiting the program.
+ * 		All data entered is validated.			
  */
 public class Project_Phase_1_BisaillonT 
 {
