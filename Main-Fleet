@@ -1,0 +1,287 @@
+import javax.swing.JOptionPane;
+
+/*
+ * Author: ImTheSilverOne
+ * Date: 4/27/2022
+ * Description: This program is used to manage a fleet of trucks and advise which boats need to be auctioned.
+ * 				This program allows for data entry, searching entered data, displaying entered data, and exiting the program.
+ * 				All data entered is validated.
+ * 				
+ */
+public class Project_Phase_1_BisaillonT 
+{
+	static String input = "";
+	static int truckCount = 0;
+	public static void main(String[] args) 
+	{
+		//Declarations:
+			//Boat Information
+			String 	[] vin = new String [100];
+			String 	[] truckMake = new String [100];
+			String 	[] truckModel = new String [100];
+			double 	[] originalPrice = new double [100];
+			long 	[] truckMiles = new long [100];
+			int		[] truckAge = new int [100];
+			boolean [] truckStatus = new boolean [100];
+			double  [] auctionPrice = new double [100]; 
+			double auctionRate = .25;
+		//Working Variables
+			int current = 0;
+			int selection = 0;
+			String searchVIN = "";
+			int startProg = 0;
+			int foundAt = -1;
+			
+		//Program Start (yes/no option)	
+			startProg = JOptionPane.showConfirmDialog(null, "Do you want to start the program?", "Start", JOptionPane.YES_NO_OPTION); 
+		while(startProg == JOptionPane.YES_OPTION) 
+		{
+			while(selection != 4)
+			{
+				selection = menu();
+				switch(selection)
+				{
+					//Option 1 Add a truck
+					case 1: getTruckInfo(vin, truckMake, truckModel, originalPrice, truckMiles, truckAge, current);
+							truckStatus(truckMiles, truckStatus, truckAge);
+							calcAucPrice(originalPrice,truckStatus,auctionPrice,auctionRate);
+							truckCount++;
+							break;
+					//Option 2 Search for a truck
+					case 2: if(truckCount == 0)
+								JOptionPane.showMessageDialog(null, "No truck data has been entered. Please enter truck data first before searching!");
+							else
+							{
+									input = JOptionPane.showInputDialog("Enter the truck VIN you're looking for: ");
+									searchVIN = input;
+									foundAt = searchVIN(vin, searchVIN, truckCount);
+									if(foundAt == -1)
+										JOptionPane.showMessageDialog(null, searchVIN + " was not found anywhere in the database!");
+									else
+										dispTruck(vin, truckMake, truckModel, truckMiles, truckAge, truckStatus, originalPrice, auctionPrice);
+							}
+							break;
+					//Option 3 Display all trucks	
+					case 3: if(truckCount == 0)
+								JOptionPane.showMessageDialog(null, "No truck data has been entered. Please enter truck data first before displaying!");
+							else
+							dispTruck(vin, truckMake, truckModel, truckMiles, truckAge, truckStatus, originalPrice, auctionPrice);
+							break;
+					//Option 4 Quit Program
+					case 4: JOptionPane.showMessageDialog(null, "Goodbye!");
+							break;
+							
+					default: JOptionPane.showMessageDialog(null, "Error! Wrong selection made. Please make another selection.");
+				}//End Switch selection
+			}//End while selection
+		}//End while startProg
+		JOptionPane.showMessageDialog(null, "Goodbye!");
+	}//End main
+	//=======================================================================================================================
+		public static int menu()
+		{
+			int selection = 0;
+			input = JOptionPane.showInputDialog("-1- Add a Truck\n"		+ 
+												"-2- Search for a Truck\n"			+
+												"-3- Display all Trucks\n"			+
+												"-4- Quit Program\n"				+
+												"\tEnter selection 1-4:");
+			selection = Integer.parseInt(input);
+			return selection;
+		}//End menu()
+	//=======================================================================================================================
+		public static void getTruckInfo(String [] vin, String [] truckMake, String [] truckModel, double [] originalPrice, long [] truckMiles, int [] truckAge, int current)
+		{
+			for(int i = 0; i < 5; i++);
+			{
+				//VIN with Validation====================================================================
+				boolean validVIN = false;
+				input = JOptionPane.showInputDialog("Enter truck VIN: ");
+				validVIN = checkVIN();
+				while(!validVIN || (input.length() > 10))
+				{
+					input = JOptionPane.showInputDialog("Invalid truck VIN. Please re-enter truck VIN: ");
+					validVIN = checkVIN();
+				}//end while validVIN
+				vin[current] = input;
+				
+				//MAKE with Validation===================================================================
+				boolean validMake = false;
+				input = JOptionPane.showInputDialog("Enter truck Make: ");
+				validMake = checkMake();
+				while(!validMake)
+				{
+					input = JOptionPane.showInputDialog("Invalid truck Make. Please re-enter truck make: ");
+					validMake = checkMake();
+				}//end while validMake
+				truckMake[current] = input;
+				
+				//MODEL with Validation==================================================================
+				boolean validModel = false;
+				input = JOptionPane.showInputDialog("Enter truck Model: ");
+				validModel = checkModel();
+				while(!validModel)
+				{
+					input = JOptionPane.showInputDialog("Invalid truck Model. Please re-enter truck model: ");
+					validModel = checkModel();
+				}//end while validMake
+				truckModel[current] = input;
+				
+				
+				//ORIGINAL PRICE with Validation=========================================================
+				boolean validPrice = false;
+				input = JOptionPane.showInputDialog("Enter truck Original Price: ");
+				validPrice = checkPrice();
+				while(!validPrice)
+				{
+					input = JOptionPane.showInputDialog("Truck original price must be numbers only. Please re-enter truck original price: ");
+					validPrice = checkPrice();
+				}//end while validPrice
+				originalPrice[current] = Double.parseDouble(input);
+				
+				//MILES with Validation==================================================================
+				boolean validMiles = false;
+				input = JOptionPane.showInputDialog("Enter truck Miles: ");
+				validMiles = checkMiles();
+				while(!validMiles)
+				{
+					input = JOptionPane.showInputDialog("Truck miles must be numbers only. Please re-enter truck miles: ");
+					validMiles = checkMiles();
+				}//end while validMiles
+				truckMiles[current] = Long.parseLong(input);
+				
+				//AGE with Validation====================================================================
+				boolean validAge = false;
+				input = JOptionPane.showInputDialog("Enter truck Age: ");
+				validAge = checkAge();
+				while(!validAge)
+				{
+					input = JOptionPane.showInputDialog("Truck age must be numbers only. Please re-enter truck age: ");
+					validAge = checkAge();
+				}//end while validAge
+				truckAge[current] = Integer.parseInt(input);
+				
+			}//end for i	 			
+		}//end getBoatInfo
+	//=======================================================================================================================
+		public static void truckStatus(long [] truckMiles, boolean [] truckStatus, int [] truckAge)
+		{
+			for(int i = 0; i < truckMiles.length; i++)
+			{
+				if(truckMiles[i] > 900000 || truckAge[i] > 10)
+					truckStatus[i] = true;
+				else
+					truckStatus[i] = false;
+			}//end for i
+		}//end boatStatus
+	//=======================================================================================================================
+		public static boolean checkVIN()
+		{	
+			for(int i = 0; i < input.length(); i++)
+			{
+				if(!Character.isLetterOrDigit(input.charAt(i)))
+					return false;					
+			}//end for i
+			return true;
+		}//end checkVIN
+	//=======================================================================================================================
+		public static boolean checkMake()
+		{	
+			for(int i = 0; i < input.length(); i++)
+			{
+				if(!Character.isLetter(input.charAt(i))) 
+					return false;				
+			}//end for i
+			return true;
+		}//end checkMake
+	//=======================================================================================================================
+		public static boolean checkModel()
+		{	
+			for(int i = 0; i < input.length(); i++)
+			{
+				if(!Character.isLetterOrDigit(input.charAt(i)))
+					return false;
+			}//end for i
+			return true;
+		}//end checkModel
+	//=======================================================================================================================
+		public static boolean checkPrice()
+		{	
+			for(int i = 0; i < input.length(); i++)
+			{
+				if(!Character.isDigit(input.charAt(i))) //if the char at position 'i' inside input is NOT whitespace
+					return false;
+			}//end for i
+			return true;
+		}//end checkPrice
+	//=======================================================================================================================
+		public static boolean checkMiles()
+		{	
+			for(int i = 0; i < input.length(); i++)
+			{
+				if(!Character.isDigit(input.charAt(i))) //if the char at position 'i' inside input is NOT whitespace
+					return false;
+			}//end for i
+			return true;
+		}//end checkPrice
+	//=======================================================================================================================
+		public static boolean checkAge()
+		{	
+			for(int i = 0; i < input.length(); i++)
+			{
+				if(!Character.isDigit(input.charAt(i))) //if the char at position 'i' inside input is NOT whitespace
+					return false;
+			}//end for i
+			return true;
+		}//end checkPrice
+	//=======================================================================================================================
+		public static int searchVIN(String [] vin, String searchVIN, int truckCount)
+		{
+			for(int i = 0; i < vin.length;i++)
+			{
+				if(searchVIN.equals(vin[i]))
+					return i;
+			}//End for i
+			return -1; //Truck VIN not found!	
+		}//End searchVIN
+	//=======================================================================================================================
+		public static void dispTruck(String [] vin, String [] truckMake, String [] truckModel, long [] truckMiles, int [] truckAge, boolean [] truckStatus, double [] originalPrice, double [] auctionPrice)
+		{
+			String [] dispMSG = new String[truckCount];
+			
+			for(int i = 0; i < truckCount; i++)
+			{
+				
+				if(truckStatus[i] == true)
+					dispMSG[i] = "This truck needs to be auctioned.";
+				else
+					dispMSG[i] = "This truck should not be auctioned.";
+			}//end for i truckCount
+						for(int i = 0; i < vin.length; i++)
+						{
+							JOptionPane.showMessageDialog(null,  "Truck Information: " 							+ "\n" +
+																 "		VIN: " 				+ vin[i] 			+ "\n" +
+						                                         "      Make: " 			+ truckMake[i] 		+ "\n" +
+									                             "      Model: " 			+ truckModel[i] 	+ "\n" +
+									                             "      Miles: " 			+ truckMiles[i] 	+ "\n" +
+									                             "      Age:" 				+ truckAge[i] 		+ "\n" +
+									                             "      Auction Status:" 	+ truckStatus[i] 	+ "\n" + 
+									                             "      Original Price: $" 	+ originalPrice[i] 	+ "\n" +
+									                             "      Auction Price: $" 	+ auctionPrice[i] 	+ "\n" + 
+									                             dispMSG[i]);
+						}//end for i vin.length
+				
+		}//End dispTruck
+	//=======================================================================================================================
+		public static void calcAucPrice(double [] originalPrice, boolean [] truckStatus, double [] auctionPrice, double auctionRate)
+		{
+			for(int i = 0; i < originalPrice.length; i++)
+			{
+			if(truckStatus[i] == true) //if(status[i])
+				auctionPrice[i] = originalPrice[i] * auctionRate;
+			else
+				auctionPrice[i] = 0.00;
+			}//end for
+		}//end calcAuctionPrice
+	//=======================================================================================================================
+}//end class
