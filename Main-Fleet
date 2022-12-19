@@ -21,7 +21,7 @@ public class Project_Phase_1_BisaillonT
 			String 	[] truckModel = new String [100];
 			double 	[] originalPrice = new double [100];
 			long 	[] truckMiles = new long [100];
-			int		[] truckAge = new int [100];
+			int	[] truckAge = new int [100];
 			boolean [] truckStatus = new boolean [100];
 			double  [] auctionPrice = new double [100]; 
 			double auctionRate = .25;
