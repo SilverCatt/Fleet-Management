@@ -3,7 +3,7 @@ import javax.swing.JOptionPane;
 /* 
  * Author: Tabitha Bisaillon
  * Date: 4/27/2022
- * Description: This program is used to manage a fleet of trucks and advise which boats need to be auctioned.
+ * Description: This program is used to manage a fleet of trucks and advise which trucks need to be auctioned.
  * 		This program allows for data entry, searching entered data, displaying entered data, and exiting the program.
  * 		All data entered is validated.			
  */
